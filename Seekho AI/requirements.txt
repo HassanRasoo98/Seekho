@@ -1,0 +1,7 @@
+git+https://github.com/openai/whisper.git
+moviepy
+transformers
+fastapi
+uvicorn
+openai==0.28
+# !pip install -q openai
