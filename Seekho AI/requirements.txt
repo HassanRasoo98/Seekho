@@ -1,7 +1,8 @@
-git+https://github.com/openai/whisper.git
+# git+https://github.com/openai/whisper.git
+openai-whisper
 moviepy
 transformers
 fastapi
 uvicorn
 openai==0.28
-# !pip install -q openai
+python-dotenv
