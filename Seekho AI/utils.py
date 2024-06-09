@@ -1,6 +1,13 @@
 import requests
 from pydantic import BaseModel
-from openai import OpenAI
+import os
+import openai
+from dotenv import load_dotenv
+
+load_dotenv()
+
+key = os.getenv('OPENAI_API_KEY')
+openai.api_key = key
 
 class ParagraphInput(BaseModel):
     paragraph: str
@@ -12,22 +19,19 @@ class Transcribe(BaseModel):
     path: str
 
 def get_mcq(paragraph: str):
-    client = OpenAI(api_key='YOUR_API_KEY') 
-    messages = [ {"role": "system", "content": 
-                "You are a intelligent assistant."} ] 
-    
-    message = input(f"User : Generate mcqs from this Paragraph. Place an asterik on the correct option: {paragraph}") 
-    if message:
-        messages.append( 
-			{"role": "user", "content": message}, 
-		)
-        chat = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
-    reply = chat.choices[0].message.content
-    print(f"User: {message}")
-    print(f"ChatGPT: {reply}")
+    response = openai.ChatCompletion.create(
+	model="gpt-3.5-turbo-0125",
+	
+	messages=[
+     	{"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+		{"role": "user", "content": f"Generate High Quality MCQs for learners from this transcript. Output must be in JSON. Include a field for correct option in JSON. Paragraph: {paragraph}"}],
+	
+        max_tokens=150,
+        temperature=0.6
+    )
 
+    reply = response['choices'][0]['message']['content']
     return reply
-	# messages.append({"role": "assistant", "content": reply})
 
 def get_heading(paragraph):
     base_url = ""
