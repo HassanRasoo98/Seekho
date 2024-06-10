@@ -10,8 +10,7 @@ from utils import ParagraphInput, Transcribe, final_transcript, get_heading, get
 
 # Create an instance of the FastAPI class
 app = FastAPI()
-model = None
-# model = whisper.load_model('small')
+model = whisper.load_model('small')
 
 app.add_middleware(
     CORSMiddleware,
