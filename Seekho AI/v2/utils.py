@@ -77,7 +77,7 @@ def get_mcq(paragraph: str):
         print('An error occured')
         return None
     
-    return validate_questions(reply)
+    return validate_questions(json.loads(reply))
 
 def get_heading(paragraph):
     base_url = ""

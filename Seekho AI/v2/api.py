@@ -91,11 +91,17 @@ async def generate_mcqs(file: UploadFile = File(...)):
         # text = "Question 2: \"what is an example of a supervised learning algorithm?\"\na. Artificial Neural Networks (ANNs)\nb. Decision Trees*\nc. Linear Regression\nd. Random Forest\n\nQuestion 3: \"Can an unsupervised learning algorithm be used to predict text labels?\"\na. No (Incorrect)\nb. Yes\nc. *It depends on the specific use case\nd. Maybe  You are an intelligent chatbot. Based on the information provided in the paragraph below, generate three multiple-choice questions (MCQs) that test the user's understanding and critical thinking. Ensure that the questions challenge the user's knowledge and comprehension of the material and avoid creating trivial or overly obvious questions.In supervised learning, we're trying to build a model to predict an answer or label provided by a teacher. In unsupervised learning, instead of a teacher, the world around us is basically providing training labels. For example, if I freeze this video of a tennis ball right now, can you draw what could be the next frame? Unsupervised learning is about modeling the world by guessing like this. And it's useful because we don't need labels provided by a teacher. Babies do a lot of unsupervised learning by watching and imitating people. And we'd like computers to be able to learn like this as well.2. The correct answer should be plausible and directly related to the information presented in the paragraph.3. Distractors should be reasonable but incorrect choices that may reflect common misconceptions or misinterpretations.5. Avoid questions that can be answered simply by recalling facts from the paragraph. Instead, aim to assess deeper understanding, critical thinking, and the ability to apply knowledge.For each multiple-choice question, provide the question text followed by four answer options, separated by line breaks. Mark the correct answer with an asterisk (*) at the beginning of the correct option.Question 1: \"question body?\"Question 2: \"what is an example of a supervised learning algorithm?\"Question 3: \"Can an unsupervised learning algorithm be used to predict text labels?\""
         # return text.split("Question")
         mcqs = []
+        
 
-        print('Generating MCQs from Transcript...')
+        print('Generating MCQs from Transcript for a total of paragraphs...', end = "")
+        paragraphs = str(content).split('\n\t')
+        
+        print(len(paragraphs))
+        
+        # print(paragraphs)
         
         # get heading
-        for paragraph in str(content).split('\n\t'):
+        for paragraph in paragraphs:
             mcq = get_mcq(paragraph)
             mcqs.append(mcq)
             # res += f"{mcq}\n{paragraph}\n\n"
