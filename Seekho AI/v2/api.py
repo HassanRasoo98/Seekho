@@ -1,3 +1,4 @@
+import json
 import traceback
 from pydantic import BaseModel
 import whisper
@@ -93,15 +94,13 @@ async def generate_mcqs(file: UploadFile = File(...)):
 
         print('Generating MCQs from Transcript...')
         
-        return get_mcq(str(content))
-        
-        # # get heading
-        # for paragraph in str(content).split('\n\t'):
-        #     mcq = get_mcq(paragraph)
-        #     mcqs.append(mcq)
-        #     # res += f"{mcq}\n{paragraph}\n\n"
+        # get heading
+        for paragraph in str(content).split('\n\t'):
+            mcq = get_mcq(paragraph)
+            mcqs.append(mcq)
+            # res += f"{mcq}\n{paragraph}\n\n"
 
-        return '\n'.join(mcqs) # original, uncomment this
+        return json.dumps(mcqs) # original, uncomment this
         # return final_transcript() # hard coded, comment this
         
     except Exception as e:
