@@ -1,3 +1,4 @@
+import json
 import requests
 from pydantic import BaseModel
 import os
@@ -17,21 +18,66 @@ class ParagraphSegmentationRequest(BaseModel):
 
 class Transcribe(BaseModel):
     path: str
+    
+def validate_questions(data):
+    # List to hold valid questions
+    valid_questions = []
+
+    for mcq in data['questions']:
+        question = mcq['question']
+        options = mcq['options']
+        answer = mcq['answer']
+        
+        if answer not in options:
+            # print(f'Mistake in {mcq}')
+            # omit this question
+            continue
+        else:
+            # If no mistake, add to the list of valid questions
+            valid_questions.append(mcq)
+
+    # Update the original data structure with only the valid questions
+    data['questions'] = valid_questions
+    new_reply = json.dumps(data)
+    return new_reply
 
 def get_mcq(paragraph: str):
+    example_json = {
+        "questions": [
+            {
+                "question": "What type of artificial intelligence has the series Crash Course AI primarily focused on?",
+                "options": [
+                    "Unsupervised learning",
+                    "Reinforcement learning",
+                    "Supervised learning",
+                    "Semi-supervised learning"
+                ],
+                "answer": "Supervised learning"
+            }
+        ]
+    }
+
     response = openai.ChatCompletion.create(
-	model="gpt-3.5-turbo-0125",
-	
-	messages=[
-     	{"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-		{"role": "user", "content": f"Generate High Quality MCQs for learners from this transcript. Output must be in JSON. Include a field for correct option in JSON. Paragraph: {paragraph}"}],
-	
-        max_tokens=150,
-        temperature=0.6
+        model="gpt-3.5-turbo-0125",
+
+        messages=[
+            # {"role": "system", "content": "You are a helpful assistant designed to generate technical/logical MCQs from a paragraph and output JSON."},
+            {"role": "system", "content": f"Provide output in valid JSON. The data schema should be like this: {json.dumps(example_json)}"},
+            {"role": "user", "content": f"Generate technical/logical MCQs from the given paragraph and output JSON. Paragraph: {paragraph}"}
+        ],
+
+        response_format = {"type": "json_object"}
     )
 
+
     reply = response['choices'][0]['message']['content']
-    return reply
+    finish_reason = response['choices'][0]['finish_reason']
+    
+    if not finish_reason == "stop":
+        print('An error occured')
+        return None
+    
+    return validate_questions(reply)
 
 def get_heading(paragraph):
     base_url = ""
