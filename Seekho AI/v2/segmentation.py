@@ -1,5 +1,6 @@
 '''
     Takes in a txt transcription file and returns a segmented txt file
+    Model Reference: https://huggingface.co/BlueOrangeDigital/distilbert-cross-segment-document-chunking?text=Left+context.+%5BSEP%5D+Right+context.
 '''
 from transformers import (
     AutoModelForSequenceClassification,

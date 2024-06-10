@@ -1,8 +1,0 @@
-# git+https://github.com/openai/whisper.git
-openai-whisper
-moviepy
-transformers
-fastapi
-uvicorn
-openai==0.28
-python-dotenv
